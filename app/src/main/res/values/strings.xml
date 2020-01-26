@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">HVlov</string>
+    <string name="errorServerUnavailable">Erreur, impossible de récupérer les informations depuis le serveur.</string>
+    <string name="warningListEmpty">La liste est vide.</string>
+    <string name="errorVlcNotFound">Erreur: VLC non trouvé, veuillez installer l\'application VLC</string>
+    <string name="settings">Paramètres</string>
+    <string name="password">Mot de passe</string>
+    <string name="serverAdress">Adresse du serveur</string>
+    <string name="apply">Appliquer</string>
+    <string name="cancel">Annuler</string>
+</resources>
