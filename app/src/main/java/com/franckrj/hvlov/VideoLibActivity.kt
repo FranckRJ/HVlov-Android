@@ -58,6 +58,8 @@ class VideoLibActivity : AppCompatActivity() {
 
             if (loadableListOfEntries?.status == LoadableValue.Status.LOADED && loadableListOfEntries.value != null) {
                 _hvlovAdapter.listOfEntries = loadableListOfEntries.value
+            } else {
+                _hvlovAdapter.listOfEntries = listOf()
             }
         })
     }
