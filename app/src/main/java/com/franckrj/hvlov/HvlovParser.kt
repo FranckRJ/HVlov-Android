@@ -15,7 +15,7 @@ class HvlovParser private constructor() {
             listOfHvlovEntries.add(
                 HvlovEntry(
                     hvlovEntryMatcher.groupValues[2],
-                    baseUrl + hvlovEntryMatcher.groupValues[1],
+                    baseUrl + "/" + hvlovEntryMatcher.groupValues[1],
                     HvlovEntry.Type.VIDEO
                 )
             )
