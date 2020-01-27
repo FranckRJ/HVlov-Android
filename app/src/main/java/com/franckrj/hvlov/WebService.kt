@@ -18,39 +18,50 @@ class WebService private constructor(private val userAgentToUse: String) {
         .followSslRedirects(false)
         .build()
 
-    fun getPage(urlForPage: String, tagToUse: Any = Object()): String? {
-        return try {
-            val request = Request.Builder()
-                .url(urlForPage)
-                .header("User-Agent", userAgentToUse)
-                .tag(tagToUse)
-                .build()
+    private fun sendRequest(urlForPage: String, postContent: Map<String, String>?, tagToUse: Any?): String? {
+        try {
+            var currentUrlForPage = urlForPage
 
-            _client.newCall(request).execute().body?.string()
+            while (true) {
+                val request = Request.Builder().apply {
+                    url(currentUrlForPage)
+
+                    header("User-Agent", userAgentToUse)
+
+                    if (postContent != null) {
+                        val formBody = FormBody.Builder().apply {
+                            for ((key, value) in postContent) {
+                                add(key, value)
+                            }
+                        }.build()
+
+                        post(formBody)
+                    }
+
+                    if (tagToUse != null) {
+                        tag(tagToUse)
+                    }
+                }.build()
+
+                val response = _client.newCall(request).execute()
+
+                if (response.isRedirect) {
+                    currentUrlForPage = response.header("Location") ?: ""
+                } else {
+                    return response.body?.string()
+                }
+            }
         } catch (_: Exception) {
-            null
+            return null
         }
     }
 
-    fun postPage(urlForPage: String, form: Map<String, String>, tagToUse: Any = Object()): String? {
-        return try {
-            val formBody = FormBody.Builder().apply {
-                for ((key, value) in form) {
-                    add(key, value)
-                }
-            }.build()
+    fun getPage(urlForPage: String, tagToUse: Any? = null): String? {
+        return sendRequest(urlForPage, null, tagToUse)
+    }
 
-            val request = Request.Builder()
-                .url(urlForPage)
-                .header("User-Agent", userAgentToUse)
-                .post(formBody)
-                .tag(tagToUse)
-                .build()
-
-            _client.newCall(request).execute().body?.string()
-        } catch (_: Exception) {
-            null
-        }
+    fun postPage(urlForPage: String, postContent: Map<String, String>, tagToUse: Any? = null): String? {
+        return sendRequest(urlForPage, postContent, tagToUse)
     }
 
     fun cancelRequest(withThisTag: Any) {
