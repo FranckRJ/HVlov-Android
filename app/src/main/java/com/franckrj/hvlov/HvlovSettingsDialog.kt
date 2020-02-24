@@ -15,6 +15,14 @@ class HvlovSettingsDialog : DialogFragment() {
 
     var onDialogResult: ((serverAdress: String, serverPassword: String) -> Unit)? = null
 
+    fun unanimatlySetTextInputLayoutText(textInputLayout: TextInputLayout, text: String)
+    {
+        val oldAnimEnabledValue: Boolean = textInputLayout.isHintAnimationEnabled
+        textInputLayout.isHintAnimationEnabled = false
+        textInputLayout.editText?.setText(text)
+        textInputLayout.isHintAnimationEnabled = oldAnimEnabledValue
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialogLayout: View = requireActivity().layoutInflater.inflate(R.layout.dialog_hvlovsettings, null)
 
@@ -24,8 +32,8 @@ class HvlovSettingsDialog : DialogFragment() {
         val serverAdressLayout: TextInputLayout = dialogLayout.findViewById(R.id.layout_serveradress_hvlovsettings)
         val serverPasswordLayout: TextInputLayout = dialogLayout.findViewById(R.id.layout_serverpassword_hvlovsettings)
 
-        serverAdressLayout.editText?.setText(serverAdress)
-        serverPasswordLayout.editText?.setText(serverPassword)
+        unanimatlySetTextInputLayoutText(serverAdressLayout, serverAdress)
+        unanimatlySetTextInputLayoutText(serverPasswordLayout, serverPassword)
 
         val builder = AlertDialog.Builder(requireActivity()).apply {
             setTitle(R.string.settings)
