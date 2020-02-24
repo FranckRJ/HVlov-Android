@@ -87,7 +87,7 @@ class VideoLibActivity : AppCompatActivity() {
             val hvlovSettingsDialog = HvlovSettingsDialog().apply {
                 arguments = hvlovSettingsArg
                 onDialogResult = { serverAdress, serverPassword ->
-                    _videoLibViewModel.hvlovServerSettings = HvlovServerSettings(serverAdress, serverPassword)
+                    _videoLibViewModel.setServerAccessInfo(serverAdress, serverPassword)
                 }
             }
             hvlovSettingsDialog.show(supportFragmentManager, "HvlovSettingsDialog")

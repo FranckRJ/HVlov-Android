@@ -13,6 +13,10 @@ private typealias LoadableListOfEntries = LoadableValue<List<HvlovEntry>?>
 // TODO: savedState pour sauvegarder le folder
 // TODO: livedata pour le folder
 class VideoLibViewModel(private val app: Application) : AndroidViewModel(app) {
+    companion object {
+        private const val _clientLibVersion: Int = 1
+    }
+
     private lateinit var _hvlovRepository: HvlovRepository
     private val _mediatorLiveListOfEntries: MediatorLiveData<LoadableListOfEntries?> = MediatorLiveData()
     private var _lastLiveListOfEntries: LiveData<LoadableListOfEntries?>? = null
@@ -45,7 +49,7 @@ class VideoLibViewModel(private val app: Application) : AndroidViewModel(app) {
         )
         val serverAdress = sharedPref.getString(currentContext.getString(R.string.settingsServerAdress), null) ?: ""
         val serverPassword = sharedPref.getString(currentContext.getString(R.string.settingsServerPassword), null) ?: ""
-        hvlovServerSettings = HvlovServerSettings(serverAdress, serverPassword)
+        hvlovServerSettings = HvlovServerSettings(serverAdress, serverPassword, _clientLibVersion)
     }
 
     private fun resetCurrentLiveListOfEntries() {
@@ -61,6 +65,10 @@ class VideoLibViewModel(private val app: Application) : AndroidViewModel(app) {
             _mediatorLiveListOfEntries.value = loadableListOfEntries
         }
         _lastLiveListOfEntries = newLiveListOfEntries
+    }
+
+    fun setServerAccessInfo(serverAdress: String, serverPassword: String) {
+        hvlovServerSettings = HvlovServerSettings(serverAdress, serverPassword, hvlovServerSettings.version)
     }
 
     fun getListOfEntries(): LiveData<LoadableListOfEntries?> = _mediatorLiveListOfEntries

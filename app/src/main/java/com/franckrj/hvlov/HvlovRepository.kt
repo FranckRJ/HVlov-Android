@@ -16,7 +16,11 @@ class HvlovRepository(private val scope: CoroutineScope, private val serverSetti
         liveEntries.value = LoadableValue.loading(null)
 
         scope.launch(Dispatchers.IO) {
-            val form = mapOf("path" to folder, "password" to serverSettings.password)
+            val form = mapOf(
+                "path" to folder,
+                "password" to serverSettings.password,
+                "version" to serverSettings.version.toString()
+            )
             val pageContent: String? = _webService.postPage(serverSettings.url, form)
 
             if (pageContent != null) {
