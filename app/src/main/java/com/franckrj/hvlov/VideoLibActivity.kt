@@ -39,7 +39,12 @@ class VideoLibActivity : AppCompatActivity() {
         list_entries_videolib.layoutManager = LinearLayoutManager(this)
         list_entries_videolib.adapter = _hvlovAdapter
 
-        _hvlovAdapter.entryClickedCallback = { hvlovEntry -> playVideoInVlc(hvlovEntry.url) }
+        _hvlovAdapter.entryClickedCallback = { hvlovEntry ->
+            when (hvlovEntry.type) {
+                HvlovEntry.Type.VIDEO -> playVideoInVlc(hvlovEntry.url)
+                HvlovEntry.Type.FOLDER -> (Unit) // TODO: Ajouter un système de chemin
+            }
+        }
     }
 
     private fun setupLiveDataObservers() {
