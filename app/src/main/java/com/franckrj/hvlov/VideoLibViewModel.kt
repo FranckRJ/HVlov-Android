@@ -9,9 +9,9 @@ import androidx.lifecycle.viewModelScope
 
 private typealias LoadableListOfEntries = LoadableValue<List<HvlovEntry>?>
 
-// TODO: pouvoir changer de folder
+// TODO: pouvoir aller au folder précédent
 // TODO: savedState pour sauvegarder le folder
-// TODO: livedata pour le folder
+// TODO: afficher le chemin du folder
 class VideoLibViewModel(private val app: Application) : AndroidViewModel(app) {
     companion object {
         private const val _clientLibVersion: Int = 1
@@ -20,6 +20,12 @@ class VideoLibViewModel(private val app: Application) : AndroidViewModel(app) {
     private lateinit var _hvlovRepository: HvlovRepository
     private val _mediatorLiveListOfEntries: MediatorLiveData<LoadableListOfEntries?> = MediatorLiveData()
     private var _lastLiveListOfEntries: LiveData<LoadableListOfEntries?>? = null
+
+    var currentPath: String = ""
+        set (newPath) {
+            field = newPath
+            updateListOfEntries()
+        }
 
     var hvlovServerSettings = HvlovServerSettings.default
         set(value) {
@@ -57,18 +63,20 @@ class VideoLibViewModel(private val app: Application) : AndroidViewModel(app) {
         _lastLiveListOfEntries = null
     }
 
+    fun setServerAccessInfo(serverAdress: String, serverPassword: String) {
+        hvlovServerSettings = HvlovServerSettings(serverAdress, serverPassword, hvlovServerSettings.version)
+        currentPath = ""
+    }
+
     fun updateListOfEntries() {
+        // TODO: Détecter si un update est déjà en cours, et ne rien faire si c'est le cas.
         resetCurrentLiveListOfEntries()
 
-        val newLiveListOfEntries = _hvlovRepository.getEntriesForFolder("")
+        val newLiveListOfEntries = _hvlovRepository.getEntriesForPath(currentPath)
         _mediatorLiveListOfEntries.addSource(newLiveListOfEntries) { loadableListOfEntries ->
             _mediatorLiveListOfEntries.value = loadableListOfEntries
         }
         _lastLiveListOfEntries = newLiveListOfEntries
-    }
-
-    fun setServerAccessInfo(serverAdress: String, serverPassword: String) {
-        hvlovServerSettings = HvlovServerSettings(serverAdress, serverPassword, hvlovServerSettings.version)
     }
 
     fun getListOfEntries(): LiveData<LoadableListOfEntries?> = _mediatorLiveListOfEntries

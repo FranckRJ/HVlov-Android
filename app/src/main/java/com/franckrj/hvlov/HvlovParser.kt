@@ -5,30 +5,47 @@ class HvlovParser private constructor() {
         val instance: HvlovParser by lazy { HvlovParser() }
     }
 
-    private val _hvlovEntryPattern = Regex("""<(video|folder) url="([^"]*)">([^<]*)</[^>]+>""")
+    private val _hvlovFolderPattern = Regex("""<folder url="([^"]*)">([^<]*)</folder>""")
+    private val _hvlovVideoPattern = Regex("""<video url="([^"]*)">([^<]*)</video>""")
 
-    fun getListOfHvlovEntries(pageSource: String, baseUrl: String): List<HvlovEntry> {
+    private fun getListOfEntriesMatchingPattern(
+        pageSource: String,
+        baseUrlParam: String,
+        pattern: Regex,
+        entryBuilder: (MatchResult, String) -> HvlovEntry
+    ): List<HvlovEntry> {
         val listOfHvlovEntries = ArrayList<HvlovEntry>()
-        var hvlovEntryMatcher: MatchResult? = _hvlovEntryPattern.find(pageSource)
+        var hvlovEntryMatcher: MatchResult? = pattern.find(pageSource)
 
         while (hvlovEntryMatcher != null) {
-            try {
-                listOfHvlovEntries.add(
-                    HvlovEntry(
-                        hvlovEntryMatcher.groupValues[3],
-                        baseUrl + "/" + hvlovEntryMatcher.groupValues[2],
-                        when (hvlovEntryMatcher.groupValues[1]) {
-                            "video" -> HvlovEntry.Type.VIDEO
-                            "folder" -> HvlovEntry.Type.FOLDER
-                            else -> throw Exception("Invalid entry type")
-                        }
-                    )
-                )
-            } catch (e: Exception) {
-                // Do nothing, ignore the entry if it fails to be added.
-            }
+            listOfHvlovEntries.add(entryBuilder(hvlovEntryMatcher, baseUrlParam))
             hvlovEntryMatcher = hvlovEntryMatcher.next()
         }
+
+        return listOfHvlovEntries
+    }
+
+    fun getListOfHvlovEntries(pageSource: String, baseUrlParam: String): List<HvlovEntry> {
+        val listOfHvlovEntries = ArrayList<HvlovEntry>()
+
+        listOfHvlovEntries.addAll(
+            getListOfEntriesMatchingPattern(pageSource, baseUrlParam, _hvlovFolderPattern) { matcher, _ ->
+                HvlovEntry(
+                    matcher.groupValues[2],
+                    matcher.groupValues[1],
+                    HvlovEntry.Type.FOLDER
+                )
+            }
+        )
+        listOfHvlovEntries.addAll(
+            getListOfEntriesMatchingPattern(pageSource, baseUrlParam, _hvlovVideoPattern) { matcher, baseUrl ->
+                HvlovEntry(
+                    matcher.groupValues[2],
+                    baseUrl + "/" + matcher.groupValues[1],
+                    HvlovEntry.Type.VIDEO
+                )
+            }
+        )
 
         return listOfHvlovEntries
     }

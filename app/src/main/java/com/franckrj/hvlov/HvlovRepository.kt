@@ -11,13 +11,13 @@ class HvlovRepository(private val scope: CoroutineScope, private val serverSetti
     private val _hvlovParser = HvlovParser.instance
     private val _webService = WebService.instance
 
-    fun getEntriesForFolder(folder: String): LiveData<LoadableValue<List<HvlovEntry>?>?> {
+    fun getEntriesForPath(path: String): LiveData<LoadableValue<List<HvlovEntry>?>?> {
         val liveEntries = MutableLiveData<LoadableValue<List<HvlovEntry>?>?>()
         liveEntries.value = LoadableValue.loading(null)
 
         scope.launch(Dispatchers.IO) {
             val form = mapOf(
-                "path" to folder,
+                "path" to path,
                 "password" to serverSettings.password,
                 "version" to serverSettings.version.toString()
             )

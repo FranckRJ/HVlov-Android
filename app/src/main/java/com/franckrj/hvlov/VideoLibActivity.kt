@@ -42,7 +42,7 @@ class VideoLibActivity : AppCompatActivity() {
         _hvlovAdapter.entryClickedCallback = { hvlovEntry ->
             when (hvlovEntry.type) {
                 HvlovEntry.Type.VIDEO -> playVideoInVlc(hvlovEntry.url)
-                HvlovEntry.Type.FOLDER -> (Unit) // TODO: Ajouter un système de chemin
+                HvlovEntry.Type.FOLDER -> _videoLibViewModel.currentPath = hvlovEntry.url
             }
         }
     }
