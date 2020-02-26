@@ -5,25 +5,27 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 
 private typealias LoadableListOfEntries = LoadableValue<List<HvlovEntry>?>
 
 // TODO: pouvoir aller au folder précédent
-// TODO: savedState pour sauvegarder le folder
 // TODO: afficher le chemin du folder
-class VideoLibViewModel(private val app: Application) : AndroidViewModel(app) {
+class VideoLibViewModel(private val _app: Application, private val _state: SavedStateHandle) : AndroidViewModel(_app) {
     companion object {
         private const val CLIENT_LIB_VERSION: Int = 1
+        private const val SAVE_CURRENT_PATH: String = "SAVE_CURRENT_PATH"
     }
 
     private lateinit var _hvlovRepository: HvlovRepository
     private val _mediatorLiveListOfEntries: MediatorLiveData<LoadableListOfEntries?> = MediatorLiveData()
     private var _lastLiveListOfEntries: LiveData<LoadableListOfEntries?>? = null
 
-    var currentPath: String = ""
-        set (newPath) {
-            field = newPath
+    var currentPath: String
+        get() = _state.get(SAVE_CURRENT_PATH) ?: ""
+        set(newPath) {
+            _state.set(SAVE_CURRENT_PATH, newPath)
             updateListOfEntries()
         }
 
@@ -31,7 +33,7 @@ class VideoLibViewModel(private val app: Application) : AndroidViewModel(app) {
         set(value) {
             field = value
 
-            val currentContext = app.applicationContext
+            val currentContext = _app.applicationContext
             val sharedPrefEdit = currentContext.getSharedPreferences(
                 currentContext.getString(R.string.preferenceFileKey),
                 Context.MODE_PRIVATE
@@ -48,7 +50,7 @@ class VideoLibViewModel(private val app: Application) : AndroidViewModel(app) {
         }
 
     init {
-        val currentContext = app.applicationContext
+        val currentContext = _app.applicationContext
         val sharedPref = currentContext.getSharedPreferences(
             currentContext.getString(R.string.preferenceFileKey),
             Context.MODE_PRIVATE
