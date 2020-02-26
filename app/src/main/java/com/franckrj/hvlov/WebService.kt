@@ -43,12 +43,12 @@ class WebService private constructor(private val userAgentToUse: String) {
                     }
                 }.build()
 
-                val response = _client.newCall(request).execute()
-
-                if (response.isRedirect) {
-                    currentUrlForPage = response.header("Location") ?: ""
-                } else {
-                    return response.body?.string()
+                _client.newCall(request).execute().use { response ->
+                    if (response.isRedirect) {
+                        currentUrlForPage = response.header("Location") ?: ""
+                    } else {
+                        return response.body?.string()
+                    }
                 }
             }
         } catch (_: Exception) {
