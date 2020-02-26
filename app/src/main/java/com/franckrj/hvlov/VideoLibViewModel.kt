@@ -14,7 +14,7 @@ private typealias LoadableListOfEntries = LoadableValue<List<HvlovEntry>?>
 // TODO: afficher le chemin du folder
 class VideoLibViewModel(private val app: Application) : AndroidViewModel(app) {
     companion object {
-        private const val _clientLibVersion: Int = 1
+        private const val CLIENT_LIB_VERSION: Int = 1
     }
 
     private lateinit var _hvlovRepository: HvlovRepository
@@ -55,7 +55,7 @@ class VideoLibViewModel(private val app: Application) : AndroidViewModel(app) {
         )
         val serverAdress = sharedPref.getString(currentContext.getString(R.string.settingsServerAdress), null) ?: ""
         val serverPassword = sharedPref.getString(currentContext.getString(R.string.settingsServerPassword), null) ?: ""
-        hvlovServerSettings = HvlovServerSettings(serverAdress, serverPassword, _clientLibVersion)
+        hvlovServerSettings = HvlovServerSettings(serverAdress, serverPassword, CLIENT_LIB_VERSION)
     }
 
     private fun resetCurrentLiveListOfEntries() {
