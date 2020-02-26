@@ -1,10 +1,9 @@
 package com.franckrj.hvlov
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.franckrj.hvlov.databinding.ItemHvloventryBinding
 
 class HvlovAdapter : RecyclerView.Adapter<HvlovAdapter.HvlovViewHolder>() {
     var entryClickedCallback: ((HvlovEntry) -> Unit)? = null
@@ -23,27 +22,25 @@ class HvlovAdapter : RecyclerView.Adapter<HvlovAdapter.HvlovViewHolder>() {
     override fun getItemCount(): Int = listOfEntries.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HvlovViewHolder {
-        val viewHolderMainView = LayoutInflater.from(parent.context).inflate(R.layout.item_hvloventry, parent, false)
-        return HvlovViewHolder(viewHolderMainView, ::entryClicked)
+        val bindingForViewHolder = ItemHvloventryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return HvlovViewHolder(bindingForViewHolder, ::entryClicked)
     }
 
     override fun onBindViewHolder(holder: HvlovViewHolder, position: Int) {
         holder.bind(listOfEntries[position], position)
     }
 
-    inner class HvlovViewHolder(private val mainView: View, private val clickCallback: (Int) -> Unit) :
-        RecyclerView.ViewHolder(mainView) {
-        private val title: TextView = mainView.findViewById(R.id.text_title_hvloventry)
-
+    inner class HvlovViewHolder(private val _binding: ItemHvloventryBinding, private val _clickCallback: (Int) -> Unit) :
+        RecyclerView.ViewHolder(_binding.root) {
         init {
-            mainView.setOnClickListener {
-                clickCallback(mainView.tag as Int)
+            _binding.root.setOnClickListener {
+                _clickCallback(_binding.root.tag as Int)
             }
         }
 
         fun bind(entry: HvlovEntry, position: Int) {
-            mainView.tag = position
-            title.text = entry.title
+            _binding.root.tag = position
+            _binding.textTitleHvloventry.text = entry.title
         }
     }
 }
