@@ -11,9 +11,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_videolib.*
+import com.franckrj.hvlov.databinding.ActivityVideolibBinding
 
 class VideoLibActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityVideolibBinding
     private val _videoLibViewModel: VideoLibViewModel by viewModels()
     private val _hvlovAdapter = HvlovAdapter()
 
@@ -33,11 +34,11 @@ class VideoLibActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        swiperefresh_main_videolib.isEnabled = false
-        swiperefresh_main_videolib.setColorSchemeResources(R.color.colorAccent)
+        binding.swiperefreshMainVideolib.isEnabled = false
+        binding.swiperefreshMainVideolib.setColorSchemeResources(R.color.colorAccent)
 
-        list_entries_videolib.layoutManager = LinearLayoutManager(this)
-        list_entries_videolib.adapter = _hvlovAdapter
+        binding.listEntriesVideolib.layoutManager = LinearLayoutManager(this)
+        binding.listEntriesVideolib.adapter = _hvlovAdapter
 
         _hvlovAdapter.entryClickedCallback = { hvlovEntry ->
             when (hvlovEntry.type) {
@@ -49,16 +50,16 @@ class VideoLibActivity : AppCompatActivity() {
 
     private fun setupLiveDataObservers() {
         _videoLibViewModel.getListOfEntries().observe(this, Observer { loadableListOfEntries ->
-            swiperefresh_main_videolib.isRefreshing = (loadableListOfEntries?.status == LoadableValue.Status.LOADING)
+            binding.swiperefreshMainVideolib.isRefreshing = (loadableListOfEntries?.status == LoadableValue.Status.LOADING)
 
             if (loadableListOfEntries == null || loadableListOfEntries.status == LoadableValue.Status.ERROR) {
-                text_error_videolib.visibility = View.VISIBLE
-                text_error_videolib.text = getString(R.string.errorServerUnavailable)
+                binding.textErrorVideolib.visibility = View.VISIBLE
+                binding.textErrorVideolib.text = getString(R.string.errorServerUnavailable)
             } else if (loadableListOfEntries.status == LoadableValue.Status.LOADED && loadableListOfEntries.value?.isEmpty() != false) { // true or null
-                text_error_videolib.visibility = View.VISIBLE
-                text_error_videolib.text = getString(R.string.warningListEmpty)
+                binding.textErrorVideolib.visibility = View.VISIBLE
+                binding.textErrorVideolib.text = getString(R.string.warningListEmpty)
             } else {
-                text_error_videolib.visibility = View.GONE
+                binding.textErrorVideolib.visibility = View.GONE
             }
 
             if (loadableListOfEntries?.status == LoadableValue.Status.LOADED && loadableListOfEntries.value != null) {
@@ -71,7 +72,8 @@ class VideoLibActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_videolib)
+        binding = ActivityVideolibBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initViews()
         setupLiveDataObservers()
