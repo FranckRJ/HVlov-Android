@@ -70,6 +70,25 @@ class VideoLibViewModel(private val _app: Application, private val _state: Saved
         currentPath = ""
     }
 
+    fun goToPreviousFolder(): Boolean {
+        var path = currentPath
+
+        while (path.endsWith("/")) {
+            path = path.dropLast(1)
+        }
+
+        if (path.isEmpty()) {
+            return false
+        }
+
+        if (path.contains('/')) {
+            currentPath = path.substring(0 until path.lastIndexOf('/'))
+        } else {
+            currentPath = ""
+        }
+        return true
+    }
+
     fun updateListOfEntries() {
         // TODO: Détecter si un update est déjà en cours, et ne rien faire si c'est le cas.
         resetCurrentLiveListOfEntries()

@@ -79,6 +79,12 @@ class VideoLibActivity : AppCompatActivity() {
         setupLiveDataObservers()
     }
 
+    override fun onBackPressed() {
+        if (!_videoLibViewModel.goToPreviousFolder()) {
+            super.onBackPressed()
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_videolib, menu)
