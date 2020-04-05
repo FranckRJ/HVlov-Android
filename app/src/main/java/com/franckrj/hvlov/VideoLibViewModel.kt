@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 
 private typealias LoadableListOfEntries = LoadableValue<List<HvlovEntry>?>
 
-// TODO: pouvoir aller au folder précédent
+// TODO: refaire le système de dossier avec des fragments + animations ? (navigation lib etc)
 // TODO: afficher le chemin du folder
 class VideoLibViewModel(private val _app: Application, private val _state: SavedStateHandle) : AndroidViewModel(_app) {
     companion object {
