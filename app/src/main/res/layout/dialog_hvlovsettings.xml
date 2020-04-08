@@ -6,10 +6,10 @@
     android:padding="8dp">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layout_serveradress_hvlovsettings"
+        android:id="@+id/layout_serveraddress_hvlovsettings"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/serverAdress"
+        android:hint="@string/serverAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -29,7 +29,7 @@
         app:endIconMode="password_toggle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_serveradress_hvlovsettings">
+        app:layout_constraintTop_toBottomOf="@+id/layout_serveraddress_hvlovsettings">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"

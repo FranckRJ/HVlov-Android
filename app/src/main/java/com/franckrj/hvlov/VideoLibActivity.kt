@@ -9,15 +9,38 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.franckrj.hvlov.databinding.ActivityVideolibBinding
 
+// TODO: Log a lot more stuff.
+// TODO: Setup DI or equivalent.
+
+/**
+ * Activity for browsing the [HvlovEntry]s of an HVlov server.
+ */
 class VideoLibActivity : AppCompatActivity() {
+    /**
+     * View binding instance.
+     */
     private lateinit var _binding: ActivityVideolibBinding
+
+    /**
+     * ViewModel for the activity.
+     */
     private val _videoLibViewModel: VideoLibViewModel by viewModels()
+
+    /**
+     * Adapter for showing the list of [HvlovEntry].
+     */
     private val _hvlovAdapter = HvlovAdapter()
 
+    /**
+     * Launch the given URL in VLC, starting from the start of the video.
+     *
+     * @param videoUrl The URL of the video to launch in VLC.
+     */
     private fun playVideoInVlc(videoUrl: String) {
         val videoUri: Uri = Uri.parse(videoUrl)
         val vlcIntent = Intent(Intent.ACTION_VIEW).apply {
@@ -33,6 +56,9 @@ class VideoLibActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Function that init the views and related objects, stuff that cannot be done in XML.
+     */
     private fun initViews() {
         _binding.swiperefreshMainVideolib.isEnabled = false
         _binding.swiperefreshMainVideolib.setColorSchemeResources(R.color.colorAccent)
@@ -48,9 +74,13 @@ class VideoLibActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Function that connect the [LiveData] events to corresponding UI updates.
+     */
     private fun setupLiveDataObservers() {
         _videoLibViewModel.getListOfEntries().observe(this, Observer { loadableListOfEntries ->
-            _binding.swiperefreshMainVideolib.isRefreshing = (loadableListOfEntries?.status == LoadableValue.Status.LOADING)
+            _binding.swiperefreshMainVideolib.isRefreshing =
+                (loadableListOfEntries?.status == LoadableValue.Status.LOADING)
 
             if (loadableListOfEntries == null || loadableListOfEntries.status == LoadableValue.Status.ERROR) {
                 _binding.textErrorVideolib.visibility = View.VISIBLE
@@ -93,8 +123,9 @@ class VideoLibActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.action_settings_videolib) {
+            // TODO: Move this code in its own function.
             val hvlovSettingsArg = Bundle().apply {
-                putString(HvlovSettingsDialog.ARG_SERVER_ADRESS, _videoLibViewModel.hvlovServerSettings.url)
+                putString(HvlovSettingsDialog.ARG_SERVER_ADDRESS, _videoLibViewModel.hvlovServerSettings.url)
                 putString(HvlovSettingsDialog.ARG_SERVER_PASSWORD, _videoLibViewModel.hvlovServerSettings.password)
             }
             val hvlovSettingsDialog = HvlovSettingsDialog().apply {

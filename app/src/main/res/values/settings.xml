@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="preferenceFileKey" translatable="false">com.franckrj.hvlov.PREFERENCE_FILE_KEY</string>
-    <string name="settingsServerAdress" translatable="false">settings.serverAdress</string>
+    <string name="settingsServerAddress" translatable="false">settings.serverAdress</string>
     <string name="settingsServerPassword" translatable="false">settings.serverPassword</string>
 </resources>

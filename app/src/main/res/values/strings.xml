@@ -5,7 +5,7 @@
     <string name="errorVlcNotFound">Erreur: VLC non trouvé, veuillez installer l\'application VLC</string>
     <string name="settings">Paramètres</string>
     <string name="password">Mot de passe</string>
-    <string name="serverAdress">Adresse du serveur</string>
+    <string name="serverAddress">Adresse du serveur</string>
     <string name="apply">Appliquer</string>
     <string name="cancel">Annuler</string>
 </resources>

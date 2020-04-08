@@ -6,15 +6,37 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-//TODO: Faire la différence entre une liste vide et une erreur côté serveur (actuellmement seules les erreurs côté client sont gérées)
+// TODO: Make the difference between an empty list and a server error, to show the appropriate message.
+// TODO: Create a RAM-cache for the latest entries retrieved (like, only the 10 latest URL).
+
+/**
+ * Repository for accessing [HvlovEntry]s of a server.
+ *
+ * @property scope The [CoroutineScope] in which the server requests will be executed.
+ * @property serverSettings The settings for communicating with the server.
+ */
 class HvlovRepository(private val scope: CoroutineScope, private val serverSettings: HvlovServerSettings) {
+    /**
+     * The service used for parsing the server response and retrieving [HvlovEntry]s.
+     */
     private val _hvlovParser = HvlovParser.instance
+
+    /**
+     * The service used for making HTTP requests to the server.
+     */
     private val _webService = WebService.instance
 
+    /**
+     * Return a [LiveData] for the list of entries requested.
+     *
+     * @param path The 'path' parameter that will be passed to the request, to access a specific folder.
+     * @return A [LiveData] of a [LoadableValue] of the [List] of [HvlovEntry]s corresponding to the requested folder.
+     */
     fun getEntriesForPath(path: String): LiveData<LoadableValue<List<HvlovEntry>?>?> {
         val liveEntries = MutableLiveData<LoadableValue<List<HvlovEntry>?>?>()
         liveEntries.value = LoadableValue.loading(null)
 
+        // TODO: Move this part to its own function.
         scope.launch(Dispatchers.IO) {
             val form = mapOf(
                 "path" to path,
