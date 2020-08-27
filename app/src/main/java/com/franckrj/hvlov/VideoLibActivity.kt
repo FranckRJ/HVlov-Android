@@ -13,13 +13,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.franckrj.hvlov.databinding.ActivityVideolibBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Log a lot more stuff.
-// TODO: Setup DI or equivalent.
 
 /**
  * Activity for browsing the [HvlovEntry]s of an HVlov server.
  */
+@AndroidEntryPoint
 class VideoLibActivity : AppCompatActivity() {
     /**
      * View binding instance.

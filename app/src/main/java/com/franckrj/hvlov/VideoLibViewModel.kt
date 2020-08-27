@@ -1,13 +1,15 @@
 package com.franckrj.hvlov
 
-import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.lifecycle.AndroidViewModel
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 /**
  * Type alias representing a list of [HvlovEntry] with a load status.
@@ -16,14 +18,18 @@ private typealias LoadableListOfEntries = LoadableValue<List<HvlovEntry>?>
 
 // TODO: Remake the folder system, maybe with fragment and animation (instead of reloading the list), maybe look into navigation lib.
 // TODO: Show the current folder somewhere in the UI.
+// TODO: Improve DI (for repo, parser, settings, etc).
 
 /**
  * ViewModel for the [VideoLibActivity].
  *
- * @property _app The application instance.
+ * @property _context The application context.
  * @property _state A [SavedStateHandle] used to store data across process death.
  */
-class VideoLibViewModel(private val _app: Application, private val _state: SavedStateHandle) : AndroidViewModel(_app) {
+class VideoLibViewModel @ViewModelInject constructor(
+    @ApplicationContext private val _context: Context,
+    @Assisted private val _state: SavedStateHandle
+) : ViewModel() {
     companion object {
         private const val CLIENT_LIB_VERSION: Int = 1
         private const val SAVE_CURRENT_PATH: String = "SAVE_CURRENT_PATH"
@@ -61,7 +67,7 @@ class VideoLibViewModel(private val _app: Application, private val _state: Saved
         set(value) {
             field = value
 
-            val currentContext = _app.applicationContext
+            val currentContext = _context
             val sharedPrefEdit = currentContext.getSharedPreferences(
                 currentContext.getString(R.string.preferenceFileKey),
                 Context.MODE_PRIVATE
@@ -78,7 +84,7 @@ class VideoLibViewModel(private val _app: Application, private val _state: Saved
         }
 
     init {
-        val currentContext = _app.applicationContext
+        val currentContext = _context
         val sharedPref = currentContext.getSharedPreferences(
             currentContext.getString(R.string.preferenceFileKey),
             Context.MODE_PRIVATE
