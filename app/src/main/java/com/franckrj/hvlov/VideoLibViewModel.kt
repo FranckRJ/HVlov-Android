@@ -24,21 +24,18 @@ private typealias LoadableListOfEntries = LoadableValue<List<HvlovEntry>?>
  * ViewModel for the [VideoLibActivity].
  *
  * @property _hvlovPreferencesService The service used to access HVlov preferences.
+ * @property _hvlovRepository The service used to retrieve [HvlovEntry] from the server.
  * @property _state A [SavedStateHandle] used to store data across process death.
  */
 @ExperimentalCoroutinesApi
 class VideoLibViewModel @ViewModelInject constructor(
     private val _hvlovPreferencesService: HvlovPreferencesService,
+    private val _hvlovRepository: HvlovRepository,
     @Assisted private val _state: SavedStateHandle,
 ) : ViewModel() {
     companion object {
         private const val SAVE_CURRENT_PATH: String = "SAVE_CURRENT_PATH"
     }
-
-    /**
-     * The service used to retrieve [HvlovEntry] from the server.
-     */
-    private lateinit var _hvlovRepository: HvlovRepository
 
     /**
      * [MediatorLiveData] of [LoadableListOfEntries] that will be set to the last [LiveData] retrieved from the [HvlovRepository].
@@ -63,7 +60,6 @@ class VideoLibViewModel @ViewModelInject constructor(
     init {
         viewModelScope.launch {
             _hvlovPreferencesService.hvlovServerSettings.collect {
-                _hvlovRepository = HvlovRepository(viewModelScope, it)
                 currentPath = ""
             }
         }
@@ -106,7 +102,7 @@ class VideoLibViewModel @ViewModelInject constructor(
     fun updateListOfEntries() {
         resetCurrentLiveListOfEntries()
 
-        val newLiveListOfEntries = _hvlovRepository.getEntriesForPath(currentPath)
+        val newLiveListOfEntries = _hvlovRepository.getEntriesForPath(viewModelScope, currentPath)
         _mediatorLiveListOfEntries.addSource(newLiveListOfEntries) { loadableListOfEntries ->
             _mediatorLiveListOfEntries.value = loadableListOfEntries
         }
