@@ -4,17 +4,19 @@ import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 // TODO: The functions are not well designed here. Should be redone with explicits parameter, a way to get the error, etc.
 
 /**
  * Service for sending web requests (HTTP).
- *
- * @property userAgentToUse The user agent used for the requests.
  */
-class WebService private constructor(private val userAgentToUse: String) {
+class WebService @Inject constructor() {
     companion object {
-        val instance: WebService by lazy { WebService("HVlov") }
+        /**
+         * The user agent used for the requests.
+         */
+        private const val userAgentToUse: String = "HVlov"
     }
 
     /**

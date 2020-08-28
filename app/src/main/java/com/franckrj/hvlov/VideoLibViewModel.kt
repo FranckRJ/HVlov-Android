@@ -18,7 +18,6 @@ private typealias LoadableListOfEntries = LoadableValue<List<HvlovEntry>?>
 
 // TODO: Remake the folder system, maybe with fragment and animation (instead of reloading the list), maybe look into navigation lib.
 // TODO: Show the current folder somewhere in the UI.
-// TODO: Improve DI (for repo, parser, web, etc).
 
 /**
  * ViewModel for the [VideoLibActivity].

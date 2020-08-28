@@ -1,13 +1,11 @@
 package com.franckrj.hvlov
 
+import javax.inject.Inject
+
 /**
  * Service for parsing [HvlovEntry]s out of HVlov server responses.
  */
-class HvlovParser private constructor() {
-    companion object {
-        val instance: HvlovParser by lazy { HvlovParser() }
-    }
-
+class HvlovParser @Inject constructor() {
     private val _hvlovFolderPattern = Regex("""<folder url="([^"]*)">([^<]*)</folder>""")
     private val _hvlovVideoPattern = Regex("""<video url="([^"]*)">([^<]*)</video>""")
 

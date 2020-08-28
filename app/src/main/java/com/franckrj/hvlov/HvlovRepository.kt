@@ -15,21 +15,15 @@ import javax.inject.Inject
  * Repository for accessing [HvlovEntry]s of a server.
  *
  * @property _hvlovPreferencesService The service used to access HVlov preferences.
+ * @property _hvlovParser The service used for parsing the server response and retrieving [HvlovEntry]s.
+ * @property _webService The service used for making HTTP requests to the server.
  */
 @ExperimentalCoroutinesApi
 class HvlovRepository @Inject constructor(
     private val _hvlovPreferencesService: HvlovPreferencesService,
+    private val _hvlovParser: HvlovParser,
+    private val _webService: WebService,
 ) {
-    /**
-     * The service used for parsing the server response and retrieving [HvlovEntry]s.
-     */
-    private val _hvlovParser = HvlovParser.instance
-
-    /**
-     * The service used for making HTTP requests to the server.
-     */
-    private val _webService = WebService.instance
-
     /**
      * Return a [LiveData] for the list of entries requested.
      *
