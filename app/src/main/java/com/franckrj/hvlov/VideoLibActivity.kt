@@ -10,16 +10,17 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.franckrj.hvlov.databinding.ActivityVideolibBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 // TODO: Log a lot more stuff.
 
 /**
  * Activity for browsing the [HvlovEntry]s of an HVlov server.
  */
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class VideoLibActivity : AppCompatActivity() {
     /**
@@ -79,7 +80,7 @@ class VideoLibActivity : AppCompatActivity() {
      * Function that connect the [LiveData] events to corresponding UI updates.
      */
     private fun setupLiveDataObservers() {
-        _videoLibViewModel.getListOfEntries().observe(this, Observer { loadableListOfEntries ->
+        _videoLibViewModel.getListOfEntries().observe(this, { loadableListOfEntries ->
             _binding.swiperefreshMainVideolib.isRefreshing =
                 (loadableListOfEntries?.status == LoadableValue.Status.LOADING)
 
@@ -124,17 +125,7 @@ class VideoLibActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.action_settings_videolib) {
-            // TODO: Move this code in its own function.
-            val hvlovSettingsArg = Bundle().apply {
-                putString(HvlovSettingsDialog.ARG_SERVER_ADDRESS, _videoLibViewModel.hvlovServerSettings.url)
-                putString(HvlovSettingsDialog.ARG_SERVER_PASSWORD, _videoLibViewModel.hvlovServerSettings.password)
-            }
-            val hvlovSettingsDialog = HvlovSettingsDialog().apply {
-                arguments = hvlovSettingsArg
-                onDialogResult = { serverAdress, serverPassword ->
-                    _videoLibViewModel.setServerAccessInfo(serverAdress, serverPassword)
-                }
-            }
+            val hvlovSettingsDialog = HvlovSettingsDialog()
             hvlovSettingsDialog.show(supportFragmentManager, "HvlovSettingsDialog")
             true
         } else {

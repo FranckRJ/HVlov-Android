@@ -6,29 +6,26 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.franckrj.hvlov.databinding.DialogHvlovsettingsBinding
 import com.google.android.material.textfield.TextInputLayout
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Inject
 
 /**
- * A dialog for entering an address / password for an HVlov server.
- *
- * The dialog can receive two arguments:
- * [ARG_SERVER_ADDRESS]: The default content of the address text field. It will be empty if not specified.
- * [ARG_SERVER_PASSWORD]: The default content of the password text field. It will be empty if not specified.
+ * A dialog for setting an address / password for an HVlov server that will be saved in the preferences.
  */
+@ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class HvlovSettingsDialog : DialogFragment() {
-    companion object {
-        const val ARG_SERVER_ADDRESS = "com.franckrj.hvlov.HvlovSettingsDialog.ARG_SERVER_ADDRESS"
-        const val ARG_SERVER_PASSWORD = "com.franckrj.hvlov.HvlovSettingsDialog.ARG_SERVER_PASSWORD"
-    }
-
     /**
      * View binding instance.
      */
     private lateinit var _binding: DialogHvlovsettingsBinding
 
     /**
-     * Callback that will be called when the user validate the dialog (click on 'ok').
+     * The service used to access HVlov preferences.
      */
-    var onDialogResult: ((serverAdress: String, serverPassword: String) -> Unit)? = null
+    @Inject
+    lateinit var hvlovPreferencesService: HvlovPreferencesService
 
     /**
      * Set the text of a [TextInputLayout] without animating it.
@@ -46,21 +43,19 @@ class HvlovSettingsDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogHvlovsettingsBinding.inflate(requireActivity().layoutInflater, null, false)
 
-        val serverAdress: String = arguments?.getString(ARG_SERVER_ADDRESS, null) ?: ""
-        val serverPassword: String = arguments?.getString(ARG_SERVER_PASSWORD, null) ?: ""
+        val hvlovServerSettings: HvlovServerSettings = hvlovPreferencesService.hvlovServerSettings.value
 
-        unanimatlySetTextInputLayoutText(_binding.layoutServeraddressHvlovsettings, serverAdress)
-        unanimatlySetTextInputLayoutText(_binding.layoutServerpasswordHvlovsettings, serverPassword)
+        unanimatlySetTextInputLayoutText(_binding.layoutServeraddressHvlovsettings, hvlovServerSettings.url)
+        unanimatlySetTextInputLayoutText(_binding.layoutServerpasswordHvlovsettings, hvlovServerSettings.password)
 
         val builder = AlertDialog.Builder(requireActivity()).apply {
             setTitle(R.string.settings)
             setView(_binding.root)
             setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
             setPositiveButton(R.string.apply) { dialog, _ ->
-                onDialogResult?.invoke(
-                    _binding.layoutServeraddressHvlovsettings.editText?.text?.toString() ?: "",
-                    _binding.layoutServerpasswordHvlovsettings.editText?.text?.toString() ?: ""
-                )
+                val serverAdressText = _binding.layoutServeraddressHvlovsettings.editText?.text?.toString() ?: ""
+                val serverPasswordText = _binding.layoutServerpasswordHvlovsettings.editText?.text?.toString() ?: ""
+                hvlovPreferencesService.setServerAccessInfo(serverAdressText, serverPasswordText)
                 dialog.dismiss()
             }
         }

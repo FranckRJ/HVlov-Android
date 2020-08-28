@@ -1,7 +1,5 @@
 package com.franckrj.hvlov
 
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
@@ -9,7 +7,9 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 /**
  * Type alias representing a list of [HvlovEntry] with a load status.
@@ -18,20 +18,20 @@ private typealias LoadableListOfEntries = LoadableValue<List<HvlovEntry>?>
 
 // TODO: Remake the folder system, maybe with fragment and animation (instead of reloading the list), maybe look into navigation lib.
 // TODO: Show the current folder somewhere in the UI.
-// TODO: Improve DI (for repo, parser, settings, etc).
+// TODO: Improve DI (for repo, parser, web, etc).
 
 /**
  * ViewModel for the [VideoLibActivity].
  *
- * @property _context The application context.
+ * @property _hvlovPreferencesService The service used to access HVlov preferences.
  * @property _state A [SavedStateHandle] used to store data across process death.
  */
+@ExperimentalCoroutinesApi
 class VideoLibViewModel @ViewModelInject constructor(
-    @ApplicationContext private val _context: Context,
-    @Assisted private val _state: SavedStateHandle
+    private val _hvlovPreferencesService: HvlovPreferencesService,
+    @Assisted private val _state: SavedStateHandle,
 ) : ViewModel() {
     companion object {
-        private const val CLIENT_LIB_VERSION: Int = 1
         private const val SAVE_CURRENT_PATH: String = "SAVE_CURRENT_PATH"
     }
 
@@ -60,38 +60,13 @@ class VideoLibViewModel @ViewModelInject constructor(
             updateListOfEntries()
         }
 
-    /**
-     * The settings used to access the HVlov server. Address and password are stored in the [SharedPreferences].
-     */
-    var hvlovServerSettings = HvlovServerSettings.default
-        set(value) {
-            field = value
-
-            val currentContext = _context
-            val sharedPrefEdit = currentContext.getSharedPreferences(
-                currentContext.getString(R.string.preferenceFileKey),
-                Context.MODE_PRIVATE
-            ).edit()
-
-            sharedPrefEdit.putString(currentContext.getString(R.string.settingsServerAddress), value.url)
-            sharedPrefEdit.putString(currentContext.getString(R.string.settingsServerPassword), value.password)
-
-            sharedPrefEdit.apply()
-
-            _hvlovRepository = HvlovRepository(viewModelScope, hvlovServerSettings)
-            resetCurrentLiveListOfEntries()
-            updateListOfEntries()
-        }
-
     init {
-        val currentContext = _context
-        val sharedPref = currentContext.getSharedPreferences(
-            currentContext.getString(R.string.preferenceFileKey),
-            Context.MODE_PRIVATE
-        )
-        val serverAddress = sharedPref.getString(currentContext.getString(R.string.settingsServerAddress), null) ?: ""
-        val serverPassword = sharedPref.getString(currentContext.getString(R.string.settingsServerPassword), null) ?: ""
-        hvlovServerSettings = HvlovServerSettings(serverAddress, serverPassword, CLIENT_LIB_VERSION)
+        viewModelScope.launch {
+            _hvlovPreferencesService.hvlovServerSettings.collect {
+                _hvlovRepository = HvlovRepository(viewModelScope, it)
+                currentPath = ""
+            }
+        }
     }
 
     /**
@@ -100,17 +75,6 @@ class VideoLibViewModel @ViewModelInject constructor(
     private fun resetCurrentLiveListOfEntries() {
         _lastLiveListOfEntries?.let { _mediatorLiveListOfEntries.removeSource(it) }
         _lastLiveListOfEntries = null
-    }
-
-    /**
-     * Set the address and the password in the [HvlovServerSettings] used to access the server. Reset [currentPath] as well.
-     *
-     * @param serverAddress The new address used for accessing the server.
-     * @param serverPassword The new password used for accessing the server.
-     */
-    fun setServerAccessInfo(serverAddress: String, serverPassword: String) {
-        hvlovServerSettings = HvlovServerSettings(serverAddress, serverPassword, hvlovServerSettings.version)
-        currentPath = ""
     }
 
     /**
