@@ -80,7 +80,7 @@ class VideoLibActivity : AppCompatActivity() {
      * Function that connect the [LiveData] events to corresponding UI updates.
      */
     private fun setupLiveDataObservers() {
-        _videoLibViewModel.getListOfEntries().observe(this, { loadableListOfEntries ->
+        _videoLibViewModel.listOfEntries.observe(this, { loadableListOfEntries ->
             _binding.swiperefreshMainVideolib.isRefreshing =
                 (loadableListOfEntries?.status == LoadableValue.Status.LOADING)
 

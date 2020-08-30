@@ -3,18 +3,15 @@ package com.franckrj.hvlov
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-
-/**
- * Type alias representing a list of [HvlovEntry] with a load status.
- */
-private typealias LoadableListOfEntries = LoadableValue<List<HvlovEntry>?>
 
 // TODO: Remake the folder system, maybe with fragment and animation (instead of reloading the list), maybe look into navigation lib.
 // TODO: Show the current folder somewhere in the UI.
@@ -37,14 +34,14 @@ class VideoLibViewModel @ViewModelInject constructor(
     }
 
     /**
-     * [MediatorLiveData] of [LoadableListOfEntries] that will be set to the last [LiveData] retrieved from the [HvlovRepository].
+     * The [LiveData] containing the list of entries to show.
      */
-    private val _mediatorLiveListOfEntries: MediatorLiveData<LoadableListOfEntries?> = MediatorLiveData()
+    private val _listOfEntries: MutableLiveData<LoadableValue<List<HvlovEntry>?>?> = MutableLiveData(null)
 
     /**
-     * The last [LiveData] retrieved from the [HvlovRepository].
+     * An immutable, public way to accede [_listOfEntries].
      */
-    private var _lastLiveListOfEntries: LiveData<LoadableListOfEntries?>? = null
+    val listOfEntries: LiveData<LoadableValue<List<HvlovEntry>?>?> = _listOfEntries
 
     /**
      * The current 'path' parameter used to access the right folder in the server. It's stored in the [SavedStateHandle].
@@ -62,14 +59,6 @@ class VideoLibViewModel @ViewModelInject constructor(
                 currentPath = ""
             }
         }
-    }
-
-    /**
-     * Remove the last [LiveData] retrieved from the [HvlovRepository] from the sources of the [_mediatorLiveListOfEntries].
-     */
-    private fun resetCurrentLiveListOfEntries() {
-        _lastLiveListOfEntries?.let { _mediatorLiveListOfEntries.removeSource(it) }
-        _lastLiveListOfEntries = null
     }
 
     /**
@@ -96,22 +85,14 @@ class VideoLibViewModel @ViewModelInject constructor(
         return true
     }
 
-    // TODO: Detect if an update is already running, and do nothing in this case. Maybe it will be done in the Repository with the cache system.
-
-    fun updateListOfEntries() {
-        resetCurrentLiveListOfEntries()
-
-        val newLiveListOfEntries = _hvlovRepository.getEntriesForPath(viewModelScope, currentPath)
-        _mediatorLiveListOfEntries.addSource(newLiveListOfEntries) { loadableListOfEntries ->
-            _mediatorLiveListOfEntries.value = loadableListOfEntries
-        }
-        _lastLiveListOfEntries = newLiveListOfEntries
-    }
-
     /**
-     * Function used to access the [_mediatorLiveListOfEntries] in an immutable way.
-     *
-     * @return A [LiveData] referencing [_mediatorLiveListOfEntries].
+     * Update the [listOfEntries] with the data of the [HvlovRepository] for the current [currentPath].
      */
-    fun getListOfEntries(): LiveData<LoadableListOfEntries?> = _mediatorLiveListOfEntries
+    fun updateListOfEntries() {
+        // TODO: Store the last job somewhere and cancel it before launching another update.
+
+        _hvlovRepository.getEntriesForPath(currentPath).onEach {
+            _listOfEntries.value = it
+        }.launchIn(viewModelScope)
+    }
 }

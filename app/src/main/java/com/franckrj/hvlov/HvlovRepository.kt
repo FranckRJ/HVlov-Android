@@ -1,11 +1,10 @@
 package com.franckrj.hvlov
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 // TODO: Make the difference between an empty list and a server error, to show the appropriate message.
@@ -25,35 +24,28 @@ class HvlovRepository @Inject constructor(
     private val _webService: WebService,
 ) {
     /**
-     * Return a [LiveData] for the list of entries requested.
+     * Return a [Flow] for the list of entries requested. The flow will run on [Dispatchers.IO].
      *
-     * @param scope The coroutine scope in which the request will be executed.
      * @param path The 'path' parameter that will be passed to the request, to access a specific folder.
-     * @return A [LiveData] of a [LoadableValue] of the [List] of [HvlovEntry]s corresponding to the requested folder.
+     * @return A [Flow] of a [LoadableValue] of the [List] of [HvlovEntry]s corresponding to the requested folder.
      */
-    fun getEntriesForPath(scope: CoroutineScope, path: String): LiveData<LoadableValue<List<HvlovEntry>?>?> {
-        val liveEntries = MutableLiveData<LoadableValue<List<HvlovEntry>?>?>()
-        liveEntries.value = LoadableValue.loading(null)
+    fun getEntriesForPath(path: String): Flow<LoadableValue<List<HvlovEntry>?>> = flow {
+        emit(LoadableValue.loading(null))
 
         val hvlovServerSettings: HvlovServerSettings = _hvlovPreferencesService.hvlovServerSettings.value
 
-        // TODO: Move this part to its own function.
-        scope.launch(Dispatchers.IO) {
-            val form = mapOf(
-                "path" to path,
-                "password" to hvlovServerSettings.password,
-                "version" to hvlovServerSettings.version.toString()
-            )
-            val pageContent: String? = _webService.postPage(hvlovServerSettings.url, form)
+        val form = mapOf(
+            "path" to path,
+            "password" to hvlovServerSettings.password,
+            "version" to hvlovServerSettings.version.toString()
+        )
+        val pageContent: String? = _webService.postPage(hvlovServerSettings.url, form)
 
-            if (pageContent != null) {
-                val listOfHvlovEntry = _hvlovParser.getListOfHvlovEntries(pageContent, hvlovServerSettings.url)
-                liveEntries.postValue(LoadableValue.loaded(listOfHvlovEntry))
-            } else {
-                liveEntries.postValue(LoadableValue.error(null))
-            }
+        if (pageContent != null) {
+            val listOfHvlovEntry = _hvlovParser.getListOfHvlovEntries(pageContent, hvlovServerSettings.url)
+            emit(LoadableValue.loaded(listOfHvlovEntry))
+        } else {
+            emit(LoadableValue.error(null))
         }
-
-        return liveEntries
-    }
+    }.flowOn(Dispatchers.IO)
 }
