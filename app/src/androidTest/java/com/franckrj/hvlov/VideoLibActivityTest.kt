@@ -6,25 +6,35 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import io.mockk.every
+import io.mockk.mockkClass
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.hamcrest.core.AllOf.allOf
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.runner.RunWith
 
 @ExperimentalCoroutinesApi
-@RunWith(AndroidJUnit4::class)
 @LargeTest
 @HiltAndroidTest
 class VideoLibActivityTest {
-    @get:Rule
-    var rule: RuleChain? =
-        RuleChain.outerRule(HiltAndroidRule(this)).around(ActivityScenarioRule(VideoLibActivity::class.java))
+    val hvlovServerSettings = HvlovServerSettings("some_url", "some_password", 1)
+
+    @get:Rule(order = 0)
+    val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
+    val activityRule = ActivityScenarioRule(VideoLibActivity::class.java)
+
+    @BindValue
+    @JvmField
+    val hvlovPreferencesService: HvlovPreferencesService = mockkClass(HvlovPreferencesService::class).also {
+        every { it.hvlovServerSettings } returns MutableStateFlow(hvlovServerSettings)
+    }
 
     @Test
     fun displayErrorWhenServerUnreachable() {

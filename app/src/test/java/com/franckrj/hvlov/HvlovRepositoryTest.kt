@@ -1,7 +1,6 @@
 package com.franckrj.hvlov
 
 import io.mockk.MockKAnnotations
-import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -10,7 +9,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -48,11 +46,6 @@ class HvlovRepositoryTest {
     fun setup() {
         MockKAnnotations.init(this)
         every { mockHvlovPreferencesService.hvlovServerSettings } returns MutableStateFlow(hvlovServerSettings)
-    }
-
-    @After
-    fun teardown() {
-        clearAllMocks()
     }
 
     @Test
