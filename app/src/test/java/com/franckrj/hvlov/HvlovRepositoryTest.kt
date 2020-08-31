@@ -2,9 +2,12 @@ package com.franckrj.hvlov
 
 import io.mockk.MockKAnnotations
 import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Before
@@ -33,16 +36,24 @@ class HvlovRepositoryTest {
     @MockK
     lateinit var mockWebService: WebService
 
+    @Suppress("unused")
+    val mockIoDispatcher = TestCoroutineDispatcher()
+
+    @InjectMockKs
+    lateinit var hvlovRepository: HvlovRepository
+
     @Before
-    fun setup() = MockKAnnotations.init(this)
+    fun setupMockk() = MockKAnnotations.init(this)
+
+    @Before
+    fun initHvlovPrefMock() {
+        every { mockHvlovPreferencesService.hvlovServerSettings } returns MutableStateFlow(hvlovServerSettings)
+    }
 
     @Test
     fun `getEntriesForPath -- return list of entries if all goes well`() {
-        every { mockHvlovPreferencesService.hvlovServerSettings.value } returns hvlovServerSettings
         every { mockWebService.postPage(any(), any()) } returns dummyPage
         every { mockHvlovParser.getListOfHvlovEntries(any(), any()) } returns loadedEntriesList.value!!
-
-        val hvlovRepository = HvlovRepository(mockHvlovPreferencesService, mockHvlovParser, mockWebService)
 
         runBlockingTest {
             Assert.assertEquals(
@@ -54,10 +65,7 @@ class HvlovRepositoryTest {
 
     @Test
     fun `getEntriesForPath -- return an error if the request fails`() {
-        every { mockHvlovPreferencesService.hvlovServerSettings.value } returns hvlovServerSettings
         every { mockWebService.postPage(any(), any()) } returns null
-
-        val hvlovRepository = HvlovRepository(mockHvlovPreferencesService, mockHvlovParser, mockWebService)
 
         runBlockingTest {
             Assert.assertEquals(

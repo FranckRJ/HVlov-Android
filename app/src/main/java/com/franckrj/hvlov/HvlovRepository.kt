@@ -1,5 +1,6 @@
 package com.franckrj.hvlov
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,7 @@ class HvlovRepository @Inject constructor(
     private val _hvlovPreferencesService: HvlovPreferencesService,
     private val _hvlovParser: HvlovParser,
     private val _webService: WebService,
+    @IoDispatcher private val _ioDispatcher: CoroutineDispatcher,
 ) {
     /**
      * Return a [Flow] for the list of entries requested. The flow will run on [Dispatchers.IO].
@@ -47,5 +49,5 @@ class HvlovRepository @Inject constructor(
         } else {
             emit(LoadableValue.error(null))
         }
-    }.flowOn(Dispatchers.IO)
+    }.flowOn(_ioDispatcher)
 }
