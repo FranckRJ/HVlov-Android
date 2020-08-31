@@ -49,4 +49,24 @@ class LoadableValue<out T> private constructor(val status: Status, val value: T,
         LOADING,
         LOADED
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as LoadableValue<*>
+
+        if (status != other.status) return false
+        if (value != other.value) return false
+        if (message != other.message) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = status.hashCode()
+        result = 31 * result + (value?.hashCode() ?: 0)
+        result = 31 * result + message.hashCode()
+        return result
+    }
 }
