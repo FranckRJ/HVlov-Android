@@ -3,7 +3,7 @@ package com.franckrj.hvlov
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.toList
@@ -27,14 +27,11 @@ class HvlovRepositoryTest {
     )
     val errorEntriesList = LoadableValue.error<List<HvlovEntry>?>(null)
 
-    @MockK
-    lateinit var mockHvlovPreferencesService: HvlovPreferencesService
+    val mockHvlovPreferencesService = mockk<HvlovPreferencesService>()
 
-    @MockK
-    lateinit var mockHvlovParser: HvlovParser
+    val mockHvlovParser = mockk<HvlovParser>()
 
-    @MockK
-    lateinit var mockWebService: WebService
+    val mockWebService = mockk<WebService>()
 
     @Suppress("unused")
     val mockIoDispatcher = TestCoroutineDispatcher()
@@ -44,8 +41,9 @@ class HvlovRepositoryTest {
 
     @Before
     fun setup() {
-        MockKAnnotations.init(this)
         every { mockHvlovPreferencesService.hvlovServerSettings } returns MutableStateFlow(hvlovServerSettings)
+
+        MockKAnnotations.init(this)
     }
 
     @Test

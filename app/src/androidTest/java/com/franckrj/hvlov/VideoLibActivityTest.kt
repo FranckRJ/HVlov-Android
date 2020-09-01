@@ -11,7 +11,7 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import io.mockk.every
-import io.mockk.mockkClass
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.hamcrest.core.AllOf.allOf
@@ -32,7 +32,7 @@ class VideoLibActivityTest {
 
     @BindValue
     @JvmField
-    val hvlovPreferencesService: HvlovPreferencesService = mockkClass(HvlovPreferencesService::class).also {
+    val hvlovPreferencesService: HvlovPreferencesService = mockk<HvlovPreferencesService>().also {
         every { it.hvlovServerSettings } returns MutableStateFlow(hvlovServerSettings)
     }
 
