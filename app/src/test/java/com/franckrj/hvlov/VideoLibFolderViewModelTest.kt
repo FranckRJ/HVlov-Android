@@ -21,7 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class VideoLibViewModelTest {
+class VideoLibFolderViewModelTest {
     companion object {
         private const val SAVE_CURRENT_PATH: String = "SAVE_CURRENT_PATH"
     }
@@ -40,7 +40,7 @@ class VideoLibViewModelTest {
     val mockSavedStateHandle = mockk<SavedStateHandle>()
 
     @InjectMockKs
-    lateinit var videoLibViewModel: VideoLibViewModel
+    lateinit var videoLibFolderViewModel: VideoLibFolderViewModel
 
     @Before
     fun setup() {
@@ -63,7 +63,7 @@ class VideoLibViewModelTest {
     @Test
     fun `goToPreviousFolder -- do nothing when there isn't a previous folder`() {
         currentPath = ""
-        assertEquals(false, videoLibViewModel.goToPreviousFolder())
+        assertEquals(false, videoLibFolderViewModel.goToPreviousFolder())
         assertEquals("", currentPath)
     }
 }

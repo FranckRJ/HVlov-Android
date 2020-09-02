@@ -8,10 +8,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 // TODO: Remake the folder system, maybe with fragment and animation (instead of reloading the list), maybe look into navigation lib.
 // TODO: Show the current folder somewhere in the UI.
@@ -19,18 +17,16 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the [VideoLibActivity].
  *
- * @property _hvlovPreferencesService The service used to access HVlov preferences.
  * @property _hvlovRepository The service used to retrieve [HvlovEntry] from the server.
  * @property _state A [SavedStateHandle] used to store data across process death.
  */
 @ExperimentalCoroutinesApi
-class VideoLibViewModel @ViewModelInject constructor(
-    private val _hvlovPreferencesService: HvlovPreferencesService,
+class VideoLibFolderViewModel @ViewModelInject constructor(
     private val _hvlovRepository: HvlovRepository,
     @Assisted private val _state: SavedStateHandle,
 ) : ViewModel() {
     companion object {
-        private const val SAVE_CURRENT_PATH: String = "SAVE_CURRENT_PATH"
+        const val ARG_FOLDER_PATH: String = "ARG_FOLDER_PATH"
     }
 
     /**
@@ -44,54 +40,21 @@ class VideoLibViewModel @ViewModelInject constructor(
     val listOfEntries: LiveData<LoadableValue<List<HvlovEntry>?>?> = _listOfEntries
 
     /**
-     * The current 'path' parameter used to access the right folder in the server. It's stored in the [SavedStateHandle].
+     * The current 'path' parameter used to access the right folder in the server.
      */
-    var currentPath: String
-        get() = _state.get(SAVE_CURRENT_PATH) ?: ""
-        set(newPath) {
-            _state.set(SAVE_CURRENT_PATH, newPath)
-            updateListOfEntries()
-        }
+    var folderPath: String = _state.get(ARG_FOLDER_PATH) ?: ""
 
     init {
-        viewModelScope.launch {
-            _hvlovPreferencesService.hvlovServerSettings.collect {
-                currentPath = ""
-            }
-        }
+        updateListOfEntries()
     }
 
     /**
-     * If the [currentPath] is constituted of one folder or more, remove the last folder from it. Otherwise do nothing.
-     *
-     * @return True if the path has been updated, false if nothing has be done.
-     */
-    fun goToPreviousFolder(): Boolean {
-        var path = currentPath
-
-        while (path.endsWith("/")) {
-            path = path.dropLast(1)
-        }
-
-        if (path.isEmpty()) {
-            return false
-        }
-
-        currentPath = if (path.contains('/')) {
-            path.substring(0 until path.lastIndexOf('/'))
-        } else {
-            ""
-        }
-        return true
-    }
-
-    /**
-     * Update the [listOfEntries] with the data of the [HvlovRepository] for the current [currentPath].
+     * Update the [listOfEntries] with the data of the [HvlovRepository] for the current [folderPath].
      */
     fun updateListOfEntries() {
         // TODO: Store the last job somewhere and cancel it before launching another update.
 
-        _hvlovRepository.getEntriesForPath(currentPath).onEach {
+        _hvlovRepository.getEntriesForPath(folderPath).onEach {
             _listOfEntries.value = it
         }.launchIn(viewModelScope)
     }

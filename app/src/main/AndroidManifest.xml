@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:targetApi="29">
+        tools:targetApi="30">
 
         <activity android:name=".MainActivity">
             <intent-filter>
