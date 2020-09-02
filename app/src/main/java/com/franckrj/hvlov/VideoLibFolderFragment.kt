@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.franckrj.hvlov.databinding.FragmentVideolibBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,7 +76,13 @@ class VideoLibFolderFragment : Fragment() {
         _hvlovAdapter.entryClickedCallback = { hvlovEntry ->
             when (hvlovEntry.type) {
                 HvlovEntry.Type.VIDEO -> playVideoInVlc(hvlovEntry.url)
-                else -> {
+                HvlovEntry.Type.FOLDER -> {
+                    val newDirection =
+                        VideoLibFolderFragmentDirections.actionVideoLibFolderFragmentToVideoLibFolderFragment(
+                            hvlovEntry.url
+                        )
+
+                    findNavController().navigate(newDirection)
                 }
             }
         }

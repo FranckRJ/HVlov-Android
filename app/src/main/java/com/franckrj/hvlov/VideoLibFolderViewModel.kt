@@ -32,7 +32,8 @@ class VideoLibFolderViewModel @ViewModelInject constructor(
     /**
      * The [LiveData] containing the list of entries to show.
      */
-    private val _listOfEntries: MutableLiveData<LoadableValue<List<HvlovEntry>?>?> = MutableLiveData(null)
+    private val _listOfEntries: MutableLiveData<LoadableValue<List<HvlovEntry>?>?> =
+        MutableLiveData(LoadableValue.loading(null))
 
     /**
      * An immutable, public way to accede [_listOfEntries].
