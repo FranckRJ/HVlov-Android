@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.onEach
 // TODO: Show the current folder somewhere in the UI.
 
 /**
- * ViewModel for the [VideoLibActivity].
+ * ViewModel for the [VideoLibFolderFragment]. Contain data about a single folder of [HvlovEntry]s.
  *
  * @property _hvlovRepository The service used to retrieve [HvlovEntry] from the server.
  * @property _state A [SavedStateHandle] used to store data across process death.

@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.franckrj.hvlov.databinding.FragmentVideolibBinding
@@ -17,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
- * Fragment for browsing the [HvlovEntry]s of an HVlov server.
+ * Fragment for displaying a folder of [HvlovEntry]s retrieved from an HVlov server.
  */
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -32,7 +34,12 @@ class VideoLibFolderFragment : Fragment() {
     private var _binding: FragmentVideolibBinding? = null
 
     /**
-     * ViewModel for the fragment.
+     * ViewModel about the whole HVlov server.
+     */
+    private val _videoLibViewModel: VideoLibViewModel by activityViewModels()
+
+    /**
+     * ViewModel about a specific folder of the HVlov server.
      */
     private val _videoLibFolderViewModel: VideoLibFolderViewModel by viewModels()
 
@@ -114,6 +121,15 @@ class VideoLibFolderFragment : Fragment() {
                 _hvlovAdapter.listOfEntries = listOf()
             }
         })
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            for (dummy in _videoLibViewModel.hvlovServerSettingsChangedChannel) {
+                val newDirection =
+                    VideoLibFolderFragmentDirections.actionGlobalReplaceAllWithVideoLibFolderFragment("")
+
+                findNavController().navigate(newDirection)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -128,8 +144,8 @@ class VideoLibFolderFragment : Fragment() {
         setupLiveDataObservers()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

@@ -8,6 +8,16 @@
         android:id="@+id/action_global_hvlovSettingsDialog"
         app:destination="@id/hvlovSettingsDialog" />
 
+    <action
+        android:id="@+id/action_global_replace_all_with_videoLibFolderFragment"
+        app:destination="@id/videoLibFolderFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+
     <fragment
         android:id="@+id/videoLibFolderFragment"
         android:name="com.franckrj.hvlov.VideoLibFolderFragment"
