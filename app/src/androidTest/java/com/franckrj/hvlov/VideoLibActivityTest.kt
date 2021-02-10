@@ -31,7 +31,6 @@ class VideoLibActivityTest {
     val activityRule = ActivityScenarioRule(VideoLibActivity::class.java)
 
     @BindValue
-    @JvmField
     val hvlovPreferencesService: HvlovPreferencesService = mockk<HvlovPreferencesService>().also {
         every { it.hvlovServerSettings } returns MutableStateFlow(hvlovServerSettings)
     }

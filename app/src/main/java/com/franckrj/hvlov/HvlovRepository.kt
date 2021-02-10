@@ -2,7 +2,6 @@ package com.franckrj.hvlov
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -18,7 +17,6 @@ import javax.inject.Inject
  * @property _hvlovParser The service used for parsing the server response and retrieving [HvlovEntry]s.
  * @property _webService The service used for making HTTP requests to the server.
  */
-@ExperimentalCoroutinesApi
 class HvlovRepository @Inject constructor(
     private val _hvlovPreferencesService: HvlovPreferencesService,
     private val _hvlovParser: HvlovParser,

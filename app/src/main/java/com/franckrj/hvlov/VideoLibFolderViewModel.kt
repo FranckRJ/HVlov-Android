@@ -1,15 +1,14 @@
 package com.franckrj.hvlov
 
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 // TODO: Remake the folder system, maybe with fragment and animation (instead of reloading the list), maybe look into navigation lib.
 // TODO: Show the current folder somewhere in the UI.
@@ -20,10 +19,10 @@ import kotlinx.coroutines.flow.onEach
  * @property _hvlovRepository The service used to retrieve [HvlovEntry] from the server.
  * @property _state A [SavedStateHandle] used to store data across process death.
  */
-@ExperimentalCoroutinesApi
-class VideoLibFolderViewModel @ViewModelInject constructor(
+@HiltViewModel
+class VideoLibFolderViewModel @Inject constructor(
     private val _hvlovRepository: HvlovRepository,
-    @Assisted private val _state: SavedStateHandle,
+    private val _state: SavedStateHandle,
 ) : ViewModel() {
     companion object {
         const val ARG_FOLDER_PATH: String = "ARG_FOLDER_PATH"

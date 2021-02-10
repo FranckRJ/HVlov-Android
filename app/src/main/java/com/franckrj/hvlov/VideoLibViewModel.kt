@@ -1,21 +1,21 @@
 package com.franckrj.hvlov
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * ViewModel shared between [VideoLibFolderFragment]s, it contains data about the whole HVlov server.
  *
  * @property _hvlovPreferencesService The service used to access HVlov preferences.
  */
-@ExperimentalCoroutinesApi
-class VideoLibViewModel @ViewModelInject constructor(
+@HiltViewModel
+class VideoLibViewModel @Inject constructor(
     private val _hvlovPreferencesService: HvlovPreferencesService,
 ) : ViewModel() {
     /**

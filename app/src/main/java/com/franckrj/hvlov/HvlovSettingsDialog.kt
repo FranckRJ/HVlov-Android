@@ -7,13 +7,11 @@ import androidx.fragment.app.DialogFragment
 import com.franckrj.hvlov.databinding.DialogHvlovsettingsBinding
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 /**
  * A dialog for setting an address / password for an HVlov server that will be saved in the preferences.
  */
-@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class HvlovSettingsDialog : DialogFragment() {
     /**

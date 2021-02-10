@@ -11,14 +11,12 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.franckrj.hvlov.databinding.ActivityVideolibBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 // TODO: Log a lot more stuff.
 
 /**
  * Activity for browsing the [HvlovEntry]s of an HVlov server.
  */
-@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class VideoLibActivity : AppCompatActivity() {
     /**

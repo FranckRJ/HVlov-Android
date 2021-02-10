@@ -16,12 +16,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.franckrj.hvlov.databinding.FragmentVideolibBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Fragment for displaying a folder of [HvlovEntry]s retrieved from an HVlov server.
  */
-@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class VideoLibFolderFragment : Fragment() {
     companion object {
