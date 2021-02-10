@@ -130,7 +130,7 @@ class VideoLibFolderFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentVideolibBinding.inflate(inflater, container, false)
         _binding = binding
         return binding.root

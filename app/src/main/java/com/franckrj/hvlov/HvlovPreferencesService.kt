@@ -48,7 +48,7 @@ class HvlovPreferencesService @Inject constructor(
         val serverPassword = sharedPref.getString(_context.getString(R.string.settingsServerPassword), null) ?: ""
 
         _hvlovServerSettings.value =
-            HvlovServerSettings(serverAddress, serverPassword, HvlovPreferencesService.CLIENT_LIB_VERSION)
+            HvlovServerSettings(serverAddress, serverPassword, CLIENT_LIB_VERSION)
     }
 
     /**
