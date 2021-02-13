@@ -2,18 +2,21 @@ package com.franckrj.hvlov
 
 /**
  * Class representing an entry returned from the HVlov server.
- *
- * @property title The title of the entry.
- * @property url The URL to access the entry.
- * @property type The type of entry, either VIDEO or FOLDER.
  */
-data class HvlovEntry(
-    val title: String,
-    val url: String,
-    val type: Type
-) {
-    enum class Type {
-        VIDEO,
-        FOLDER
-    }
+sealed class HvlovEntry {
+    /**
+     * A video entry on the HVlov server.
+     *
+     * @property title The title of the video.
+     * @property url The url to access the video.
+     */
+    data class Video(val title: String, val url: String) : HvlovEntry()
+
+    /**
+     * A folder entry on the HVlov server.
+     *
+     * @property title The title of the folder.
+     * @property url The url to access the folder.
+     */
+    data class Folder(val title: String, val url: String) : HvlovEntry()
 }

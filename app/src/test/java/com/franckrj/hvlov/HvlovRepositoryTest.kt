@@ -21,8 +21,8 @@ class HvlovRepositoryTest {
     val loadingEntriesList = LoadableValue.loading<List<HvlovEntry>?>(null)
     val loadedEntriesList = LoadableValue.loaded<List<HvlovEntry>?>(
         listOf(
-            HvlovEntry("blabla", "etc/url", HvlovEntry.Type.FOLDER),
-            HvlovEntry("autchoz", "tjr/pa/sa", HvlovEntry.Type.VIDEO),
+            HvlovEntry.Folder("blabla", "etc/url"),
+            HvlovEntry.Video("autchoz", "tjr/pa/sa"),
         )
     )
     val errorEntriesList = LoadableValue.error<List<HvlovEntry>?>(null)

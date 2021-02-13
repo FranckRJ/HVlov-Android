@@ -48,19 +48,17 @@ class HvlovParser @Inject constructor() {
 
         listOfHvlovEntries.addAll(
             getListOfEntriesMatchingPattern(pageSource, _hvlovFolderPattern) { matcher ->
-                HvlovEntry(
+                HvlovEntry.Folder(
                     matcher.groupValues[2],
                     matcher.groupValues[1],
-                    HvlovEntry.Type.FOLDER
                 )
             }
         )
         listOfHvlovEntries.addAll(
             getListOfEntriesMatchingPattern(pageSource, _hvlovVideoPattern) { matcher ->
-                HvlovEntry(
+                HvlovEntry.Video(
                     matcher.groupValues[2],
                     baseUrl + "/" + matcher.groupValues[1],
-                    HvlovEntry.Type.VIDEO
                 )
             }
         )
