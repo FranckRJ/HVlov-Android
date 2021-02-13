@@ -46,7 +46,7 @@ class HvlovSettingsDialog : DialogFragment() {
         unanimatlySetTextInputLayoutText(_binding.layoutServeraddressHvlovsettings, hvlovServerSettings.url)
         unanimatlySetTextInputLayoutText(_binding.layoutServerpasswordHvlovsettings, hvlovServerSettings.password)
 
-        val builder = AlertDialog.Builder(requireActivity()).apply {
+        val builder = AlertDialog.Builder(requireContext()).apply {
             setTitle(R.string.settings)
             setView(_binding.root)
             setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }

@@ -62,7 +62,7 @@ class VideoLibFolderFragment : Fragment() {
         try {
             startActivity(vlcIntent)
         } catch (e: Exception) {
-            Toast.makeText(requireActivity(), R.string.errorVlcNotFound, Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), R.string.errorVlcNotFound, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -75,7 +75,7 @@ class VideoLibFolderFragment : Fragment() {
         binding.swiperefreshMainVideolib.isEnabled = false
         binding.swiperefreshMainVideolib.setColorSchemeResources(R.color.colorAccent)
 
-        binding.listEntriesVideolib.layoutManager = LinearLayoutManager(requireActivity())
+        binding.listEntriesVideolib.layoutManager = LinearLayoutManager(requireContext())
         binding.listEntriesVideolib.adapter = _hvlovAdapter
 
         _hvlovAdapter.entryClickedCallback = { hvlovEntry ->
@@ -133,13 +133,9 @@ class VideoLibFolderFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentVideolibBinding.inflate(inflater, container, false)
         _binding = binding
-        return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         initViews()
         setupLiveDataObservers()
+        return binding.root
     }
 
     override fun onDestroyView() {
