@@ -32,7 +32,7 @@ class VideoLibFolderViewModelTest {
 
     @Before
     fun setup() {
-        every { mockSavedStateHandle.get<String>("ARG_FOLDER_PATH") } returns ""
+        every { mockSavedStateHandle.get<String>(VideoLibFolderViewModel.ARG_FOLDER_PATH) } returns ""
         every { mockHvlovRepository.getEntriesForPath(any()) } returns flow { }
 
         Dispatchers.setMain(TestCoroutineDispatcher())
