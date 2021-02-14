@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:contentDescription="@string/icon_of_entry_type"
+            android:contentDescription="@string/iconOfEntryType"
             android:src="@drawable/ic_video_grey_24dp" />
 
         <com.google.android.material.textview.MaterialTextView

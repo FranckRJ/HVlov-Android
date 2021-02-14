@@ -23,7 +23,7 @@
         android:name="com.franckrj.hvlov.VideoLibFolderFragment"
         android:label="@string/app_name">
         <argument
-            android:name="ARG_FOLDER_PATH"
+            android:name="folder_path"
             android:defaultValue=""
             app:argType="string" />
 
@@ -34,11 +34,24 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/action_videoLibFolderFragment_to_videoGroupSelectorDialog"
+            app:destination="@id/videoGroupSelectorDialog" />
     </fragment>
 
     <dialog
         android:id="@+id/hvlovSettingsDialog"
         android:name="com.franckrj.hvlov.HvlovSettingsDialog"
         android:label="@string/settings" />
+
+    <dialog
+        android:id="@+id/videoGroupSelectorDialog"
+        android:name="com.franckrj.hvlov.VideoGroupSelectorDialog"
+        android:label="@string/selectVersionInVideoGroup">
+        <argument
+            android:name="video_tags"
+            app:argType="string[]" />
+    </dialog>
 
 </navigation>

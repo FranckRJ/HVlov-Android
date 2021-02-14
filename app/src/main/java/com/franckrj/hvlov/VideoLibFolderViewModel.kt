@@ -24,7 +24,7 @@ class VideoLibFolderViewModel @Inject constructor(
     private val _state: SavedStateHandle,
 ) : ViewModel() {
     companion object {
-        const val ARG_FOLDER_PATH: String = "ARG_FOLDER_PATH"
+        const val ARG_FOLDER_PATH: String = "folder_path"
     }
 
     /**

@@ -18,7 +18,7 @@ class HvlovPreferencesService @Inject constructor(
     @ApplicationContext private val _context: Context
 ) {
     companion object {
-        private const val CLIENT_LIB_VERSION: Int = 1
+        private const val CLIENT_LIB_VERSION: Int = 2
     }
 
     /**

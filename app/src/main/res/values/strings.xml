@@ -8,5 +8,11 @@
     <string name="serverAddress">Adresse du serveur</string>
     <string name="apply">Appliquer</string>
     <string name="cancel">Annuler</string>
-    <string name="icon_of_entry_type">Icone du type d\'entrée</string>
+    <string name="iconOfEntryType">Icone du type d\'entrée</string>
+    <string name="selectVersionInVideoGroup">Sélectionner la version de la vidéo à regarder</string>
+    <string name="hdTag">Haute définition</string>
+    <string name="sdTag">Basse définition</string>
+    <string name="uhdTag">Ultra haute définition</string>
+    <string name="usdTag">Ultra basse définition</string>
+    <string name="mdTag">Définition normale</string>
 </resources>

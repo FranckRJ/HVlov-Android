@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.clearFragmentResultListener
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
@@ -23,10 +25,6 @@ import kotlinx.coroutines.flow.collect
  */
 @AndroidEntryPoint
 class VideoLibFolderFragment : Fragment() {
-    companion object {
-        const val ARG_FOLDER_PATH = VideoLibFolderViewModel.ARG_FOLDER_PATH
-    }
-
     /**
      * View binding instance.
      */
@@ -81,12 +79,26 @@ class VideoLibFolderFragment : Fragment() {
 
         _hvlovAdapter.entryClickedCallback = { hvlovEntry ->
             when (hvlovEntry) {
-                is HvlovEntry.Video -> playVideoInVlc(_videoLibViewModel.hvlovServerUrl.value + "/" + hvlovEntry.relativeUrl)
                 is HvlovEntry.Folder -> {
                     val newDirection =
                         VideoLibFolderFragmentDirections.actionVideoLibFolderFragmentToVideoLibFolderFragment(
                             hvlovEntry.path
                         )
+
+                    findNavController().navigate(newDirection)
+                }
+                is HvlovEntry.Video -> playVideoInVlc(_videoLibViewModel.hvlovServerUrl.value + "/" + hvlovEntry.relativeUrl)
+                is HvlovEntry.VideoGroup -> {
+                    val newDirection =
+                        VideoLibFolderFragmentDirections.actionVideoLibFolderFragmentToVideoGroupSelectorDialog(
+                            hvlovEntry.relativeUrlPerTags.keys.toTypedArray()
+                        )
+
+                    setFragmentResultListener(VideoGroupSelectorDialog.RESULT_VIDEO_TAG_CHOSEN) { _, bundle ->
+                        val videoTagChosen = bundle.getString(VideoGroupSelectorDialog.ARG_VIDEO_TAG_CHOSEN)!!
+                        playVideoInVlc(_videoLibViewModel.hvlovServerUrl.value + "/" + hvlovEntry.relativeUrlPerTags[videoTagChosen])
+                        clearFragmentResultListener(VideoGroupSelectorDialog.RESULT_VIDEO_TAG_CHOSEN)
+                    }
 
                     findNavController().navigate(newDirection)
                 }
