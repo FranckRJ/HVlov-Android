@@ -8,9 +8,9 @@ sealed class HvlovEntry {
      * A video entry on the HVlov server.
      *
      * @property title The title of the video.
-     * @property url The url to access the video.
+     * @property relativeUrl The url to access the video, relatively to the URL of the server.
      */
-    data class Video(val title: String, val url: String) : HvlovEntry()
+    data class Video(val title: String, val relativeUrl: String) : HvlovEntry()
 
     /**
      * A folder entry on the HVlov server.
