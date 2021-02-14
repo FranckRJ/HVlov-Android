@@ -41,7 +41,7 @@ class VideoLibFolderViewModel @Inject constructor(
     /**
      * The current 'path' parameter used to access the right folder in the server.
      */
-    var folderPath: String = _state.get(ARG_FOLDER_PATH) ?: ""
+    val folderPath: String = _state.get(ARG_FOLDER_PATH) ?: ""
 
     init {
         updateListOfEntries()

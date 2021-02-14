@@ -81,7 +81,7 @@ class VideoLibFolderFragment : Fragment() {
 
         _hvlovAdapter.entryClickedCallback = { hvlovEntry ->
             when (hvlovEntry) {
-                is HvlovEntry.Video -> playVideoInVlc(hvlovEntry.url) // TODO: Fix wrong url used here (missing base)
+                is HvlovEntry.Video -> playVideoInVlc(_videoLibViewModel.hvlovServerUrl.value + "/" + hvlovEntry.url)
                 is HvlovEntry.Folder -> {
                     val newDirection =
                         VideoLibFolderFragmentDirections.actionVideoLibFolderFragmentToVideoLibFolderFragment(

@@ -6,7 +6,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,6 +32,12 @@ class VideoLibViewModel @Inject constructor(
      * A collect-only, public view of [_hvlovServerSettingsChanged].
      */
     val hvlovServerSettingsChanged: SharedFlow<Unit> = _hvlovServerSettingsChanged
+
+    /**
+     * The url of the HVlov server.
+     */
+    val hvlovServerUrl: StateFlow<String> =
+        _hvlovPreferencesService.hvlovServerSettings.map { it.url }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     init {
         viewModelScope.launch {
