@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 // TODO: Show the current folder somewhere in the UI.
+// TODO: Change LiveData to Flow ?
 
 /**
  * ViewModel for the [VideoLibFolderFragment]. Contain data about a single folder of [HvlovEntry]s.

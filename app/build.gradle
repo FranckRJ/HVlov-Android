@@ -11,8 +11,8 @@ android {
         applicationId "com.franckrj.hvlov"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 9
-        versionName "0.9"
+        versionCode 10
+        versionName "0.10"
         testInstrumentationRunner "com.franckrj.hvlov.HiltTestRunner"
     }
     compileOptions {
