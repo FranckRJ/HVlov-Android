@@ -16,7 +16,7 @@ sealed class HvlovEntry {
      * A folder entry on the HVlov server.
      *
      * @property title The title of the folder.
-     * @property url The url to access the folder.
+     * @property path The path to the folder.
      */
-    data class Folder(val title: String, val url: String) : HvlovEntry()
+    data class Folder(val title: String, val path: String) : HvlovEntry()
 }

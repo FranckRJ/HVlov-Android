@@ -85,7 +85,7 @@ class VideoLibFolderFragment : Fragment() {
                 is HvlovEntry.Folder -> {
                     val newDirection =
                         VideoLibFolderFragmentDirections.actionVideoLibFolderFragmentToVideoLibFolderFragment(
-                            hvlovEntry.url
+                            hvlovEntry.path
                         )
 
                     findNavController().navigate(newDirection)
