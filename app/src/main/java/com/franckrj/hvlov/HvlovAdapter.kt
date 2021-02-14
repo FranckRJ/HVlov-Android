@@ -70,6 +70,12 @@ class HvlovAdapter : RecyclerView.Adapter<HvlovAdapter.HvlovViewHolder>() {
          */
         fun bind(entry: HvlovEntry, position: Int) {
             _binding.root.tag = position
+            _binding.imageTypeHvloventry.setImageResource(
+                when (entry) {
+                    is HvlovEntry.Video -> R.drawable.ic_video_grey_24dp
+                    is HvlovEntry.Folder -> R.drawable.ic_folder_grey_24dp
+                }
+            )
             _binding.textTitleHvloventry.text = when (entry) {
                 is HvlovEntry.Video -> entry.title
                 is HvlovEntry.Folder -> entry.title

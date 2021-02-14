@@ -8,4 +8,5 @@
     <string name="serverAddress">Adresse du serveur</string>
     <string name="apply">Appliquer</string>
     <string name="cancel">Annuler</string>
+    <string name="icon_of_entry_type">Icone du type d\'entrée</string>
 </resources>
