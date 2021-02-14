@@ -3,8 +3,9 @@ package com.franckrj.hvlov
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,25 +20,20 @@ class VideoLibViewModel @Inject constructor(
     private val _hvlovPreferencesService: HvlovPreferencesService,
 ) : ViewModel() {
     /**
-     * A [Channel] that only transmit event for when the settings of the HVlov server have changed.
+     * A [MutableSharedFlow] that only transmit event for when the settings of the HVlov server have changed.
      */
-    private val _hvlovServerSettingsChangedChannel = Channel<Unit>(Channel.CONFLATED)
+    private val _hvlovServerSettingsChanged = MutableSharedFlow<Unit>(0, 1, BufferOverflow.DROP_OLDEST)
 
     /**
-     * A receive-only, public view of [_hvlovServerSettingsChangedChannel].
+     * A collect-only, public view of [_hvlovServerSettingsChanged].
      */
-    val hvlovServerSettingsChangedChannel: ReceiveChannel<Unit> = _hvlovServerSettingsChangedChannel
+    val hvlovServerSettingsChanged: SharedFlow<Unit> = _hvlovServerSettingsChanged
 
     init {
         viewModelScope.launch {
             _hvlovPreferencesService.hvlovServerSettings.collect {
-                _hvlovServerSettingsChangedChannel.send(Unit)
+                _hvlovServerSettingsChanged.emit(Unit)
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        _hvlovServerSettingsChangedChannel.close()
     }
 }

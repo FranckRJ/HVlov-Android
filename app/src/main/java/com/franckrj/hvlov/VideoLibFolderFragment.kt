@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.franckrj.hvlov.databinding.FragmentVideolibBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 /**
  * Fragment for displaying a folder of [HvlovEntry]s retrieved from an HVlov server.
@@ -121,9 +122,8 @@ class VideoLibFolderFragment : Fragment() {
         })
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            for (dummy in _videoLibViewModel.hvlovServerSettingsChangedChannel) {
-                val newDirection =
-                    VideoLibFolderFragmentDirections.actionGlobalReplaceAllWithVideoLibFolderFragment("")
+            _videoLibViewModel.hvlovServerSettingsChanged.collect {
+                val newDirection = VideoLibFolderFragmentDirections.actionGlobalReplaceAllWithVideoLibFolderFragment("")
 
                 findNavController().navigate(newDirection)
             }
