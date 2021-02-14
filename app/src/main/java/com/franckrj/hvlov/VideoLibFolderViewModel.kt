@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-// TODO: Remake the folder system, maybe with fragment and animation (instead of reloading the list), maybe look into navigation lib.
 // TODO: Show the current folder somewhere in the UI.
 
 /**

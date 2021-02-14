@@ -49,7 +49,7 @@ class HvlovRepositoryTest {
     @Test
     fun `getEntriesForPath -- return list of entries if all goes well`() {
         every { mockWebService.postPage(any(), any()) } returns dummyPage
-        every { mockHvlovParser.getListOfHvlovEntries(any(), any()) } returns loadedEntriesList.value!!
+        every { mockHvlovParser.getListOfHvlovEntries(any()) } returns loadedEntriesList.value!!
 
         runBlockingTest {
             Assert.assertEquals(

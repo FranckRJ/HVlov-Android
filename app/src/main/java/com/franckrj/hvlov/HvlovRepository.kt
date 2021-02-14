@@ -42,8 +42,12 @@ class HvlovRepository @Inject constructor(
         val pageContent: String? = _webService.postPage(hvlovServerSettings.url, form)
 
         if (pageContent != null) {
-            val listOfHvlovEntry = _hvlovParser.getListOfHvlovEntries(pageContent, hvlovServerSettings.url)
-            emit(LoadableValue.loaded(listOfHvlovEntry))
+            try {
+                val listOfHvlovEntry = _hvlovParser.getListOfHvlovEntries(pageContent)
+                emit(LoadableValue.loaded(listOfHvlovEntry))
+            } catch (e: Exception) {
+                emit(LoadableValue.error(null))
+            }
         } else {
             emit(LoadableValue.error(null))
         }
